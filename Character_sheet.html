@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Personagem - Estilo Hirohiko Araki</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .tab-pane {
+            padding: 20px;
+        }
+        h3 {
+            margin-top: 20px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+        textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4" id="app">
+        <h1 class="mb-4">Ficha de Personagem</h1>
+        
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="true">Criar Personagem</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="saved-tab" data-bs-toggle="tab" data-bs-target="#saved" type="button" role="tab" aria-controls="saved" aria-selected="false">Personagens Salvos</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- Aba de Criação de Personagem -->
+            <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <h3>Informações Básicas</h3>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Nome/Apelido:</label>
+                            <input type="text" class="form-control" id="name" v-model="character.name">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="age">Idade:</label>
+                            <input type="number" class="form-control" id="age" v-model="character.age">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="sex">Sexo:</label>
+                            <select class="form-select" id="sex" v-model="character.sex">
+                                <option value="">Selecione...</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="birthdate">Data de Nascimento/Signo:</label>
+                            <input type="text" class="form-control" id="birthdate" v-model="character.birthdate">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="bloodType">Tipo Sanguíneo:</label>
+                            <select class="form-select" id="bloodType" v-model="character.bloodType">
+                                <option value="">Selecione...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="birthplace">Local de Nascimento:</label>
+                            <input type="text" class="form-control" id="birthplace" v-model="character.birthplace">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="height">Altura (cm):</label>
+                            <input type="number" class="form-control" id="height" v-model="character.height">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="weight">Peso (kg):</label>
+                            <input type="number" class="form-control" id="weight" v-model="character.weight">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="hairColor">Cor do Cabelo:</label>
+                            <input type="text" class="form-control" id="hairColor" v-model="character.hairColor">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="eyeColor">Cor dos Olhos:</label>
+                            <input type="text" class="form-control" id="eyeColor" v-model="character.eyeColor">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eyesight">Visão/Daltonismo/Óculos:</label>
+                            <input type="text" class="form-control" id="eyesight" v-model="character.eyesight">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="handedness">Mão Dominante:</label>
+                            <select class="form-select" id="handedness" v-model="character.handedness">
+                                <option value="">Selecione...</option>
+                                <option value="Destro">Destro</option>
+                                <option value="Canhoto">Canhoto</option>
+                                <option value="Ambidestro">Ambidestro</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="voiceType">Tipo de voz:</label>
+                            <select class="form-select" id="voiceType" v-model="character.voiceType">
+                                <option value="">Selecione...</option>
+                                <option value="Soprano - aguda feminina">Soprano - aguda feminina</option>
+                                <option value="Mezzo-soprano - média feminina">Mezzo-soprano - média feminina</option>
+                                <option value="Contralto - grave feminina">Contralto - grave feminina</option>
+                                <option value="Tenor - aguda masculina">Tenor - aguda masculina</option>
+                                <option value="Barítono - média masculina">Barítono - média masculina</option>
+                                <option value="Baixo - grave masculina">Baixo - grave masculina</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="medicalHistory">Histórico Médico (Cirurgias/Cáries/Doenças):</label>
+                            <textarea class="form-control" id="medicalHistory" rows="2" v-model="character.medicalHistory"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="scars">Cicatrizes, Queimaduras/Danos na Pele:</label>
+                            <textarea class="form-control" id="scars" rows="2" v-model="character.scars"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="birthmarks">Marcas de Nascença, Tatuagens:</label>
+                            <textarea class="form-control" id="birthmarks" rows="2" v-model="character.birthmarks"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="distinctiveFeatures">Outras Características Físicas Distintivas:</label>
+                            <textarea class="form-control" id="distinctiveFeatures" rows="3" v-model="character.distinctiveFeatures"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="race">Raça/Etnia:</label>
+                            <input type="text" class="form-control" id="race" v-model="character.race">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="religion">Religião:</label>
+                            <input type="text" class="form-control" id="religion" v-model="character.religion">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="records">Antecedentes Criminais/Prêmios/Educação:</label>
+                            <textarea class="form-control" id="records" rows="2" v-model="character.records"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <h3>Experiências e Relacionamentos</h3>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="formativeExperiences">Experiências Formativas como Criança/Jovem:</label>
+                            <textarea class="form-control" id="formativeExperiences" rows="3" v-model="character.formativeExperiences"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="sexualHistory">Histórico Sexual/Amantes:</label>
+                            <textarea class="form-control" id="sexualHistory" rows="2" v-model="character.sexualHistory"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="romanceThoughts">Pensamentos sobre Casamento/Romance:</label>
+                            <textarea class="form-control" id="romanceThoughts" rows="2" v-model="character.romanceThoughts"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="peopleRelations">Pessoas que Admira/Pessoas que Odeia:</label>
+                            <textarea class="form-control" id="peopleRelations" rows="2" v-model="character.peopleRelations"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="dreams">Sonhos para o Futuro:</label>
+                            <textarea class="form-control" id="dreams" rows="2" v-model="character.dreams"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fears">Medos:</label>
+                            <textarea class="form-control" id="fears" rows="2" v-model="character.fears"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="personalityTraits">Traços de Personalidade:</label>
+                            <textarea class="form-control" id="personalityTraits" rows="2" v-model="character.personalityTraits"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="sayingsHabits">Expressões Favoritas, Hábitos:</label>
+                            <textarea class="form-control" id="sayingsHabits" rows="2" v-model="character.sayingsHabits"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="relationships">Relacionamentos (Comportamento):</label>
+                            <textarea class="form-control" id="relationships" rows="3" v-model="character.relationships"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="familyRelationships">Relacionamento Familiar (Comportamento):</label>
+                            <textarea class="form-control" id="familyRelationships" rows="3" v-model="character.familyRelationships"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="problemRelationships">Relacionamentos Problemáticos:</label>
+                            <textarea class="form-control" id="problemRelationships" rows="2" v-model="character.problemRelationships"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <h3>Ocupação e Status</h3>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="employment">Emprego/Escola:</label>
+                            <input type="text" class="form-control" id="employment" v-model="character.employment">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="economicStatus">Status Econômico/Comportamento:</label>
+                            <input type="text" class="form-control" id="economicStatus" v-model="character.economicStatus">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="pets">Animais de Estimação/Plantas:</label>
+                            <input type="text" class="form-control" id="pets" v-model="character.pets">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <h3>Personalidade e Habilidades</h3>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="personalityTraits2">Personalidade (Alegre/Melancólico, Humorístico/Violento, Ativo, Sociável, Intelectual, Virtuoso, Expressivo):</label>
+                            <textarea class="form-control" id="personalityTraits2" rows="3" v-model="character.personalityTraits2"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="weaknesses">Fraquezas/Preocupações/Traços Incomuns:</label>
+                            <textarea class="form-control" id="weaknesses" rows="2" v-model="character.weaknesses"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="distinctive">O que é Distintivo sobre Eles?</label>
+                            <textarea class="form-control" id="distinctive" rows="2" v-model="character.distinctive"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="specialSkills">Habilidades Especiais:</label>
+                            <textarea class="form-control" id="specialSkills" rows="2" v-model="character.specialSkills"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fightingStyles">Estilos de Luta (Habilidades):</label>
+                            <textarea class="form-control" id="fightingStyles" rows="2" v-model="character.fightingStyles"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="physicalSkills">Ágil? Esportes/Dança, Artes Marciais, Armas, Direção:</label>
+                            <textarea class="form-control" id="physicalSkills" rows="2" v-model="character.physicalSkills"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="languages">Estudo de Idiomas/Outras Certificações:</label>
+                            <textarea class="form-control" id="languages" rows="2" v-model="character.languages"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="strengthsWeaknesses">Pontos Fortes e Fracos:</label>
+                            <textarea class="form-control" id="strengthsWeaknesses" rows="2" v-model="character.strengthsWeaknesses"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <h3>Interesses e Preferências</h3>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="hobbies">Hobbies/Recreações:</label>
+                            <textarea class="form-control" id="hobbies" rows="2" v-model="character.hobbies"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="likesDisikes">Gostos/Desgostos:</label>
+                            <textarea class="form-control" id="likesDisikes" rows="2" v-model="character.likesDisikes"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="food">Comida:</label>
+                            <input type="text" class="form-control" id="food" v-model="character.food">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="clothing">Roupas:</label>
+                            <input type="text" class="form-control" id="clothing" v-model="character.clothing">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="shelter">Moradia:</label>
+                            <input type="text" class="form-control" id="shelter" v-model="character.shelter">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="habits">Hábitos:</label>
+                            <textarea class="form-control" id="habits" rows="2" v-model="character.habits"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phrases">Frases Favoritas:</label>
+                            <textarea class="form-control" id="phrases" rows="2" v-model="character.phrases"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="music">Música/Jornais:</label>
+                            <input type="text" class="form-control" id="music" v-model="character.music">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="books">Livros/Revistas:</label>
+                            <input type="text" class="form-control" id="books" v-model="character.books">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="movies">Filmes:</label>
+                            <input type="text" class="form-control" id="movies" v-model="character.movies">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="creativeHobbies">Atividades Criativas:</label>
+                            <input type="text" class="form-control" id="creativeHobbies" v-model="character.creativeHobbies">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="collections">Coleções:</label>
+                            <input type="text" class="form-control" id="collections" v-model="character.collections">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="favoriteColors">Cor Favorita/Menos Favorita:</label>
+                            <input type="text" class="form-control" id="favoriteColors" v-model="character.favoriteColors">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="perfume">Perfume/Colônia:</label>
+                            <input type="text" class="form-control" id="perfume" v-model="character.perfume">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fashion">Decoração/Moda:</label>
+                            <input type="text" class="form-control" id="fashion" v-model="character.fashion">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="location">Localização/Pessoas:</label>
+                            <input type="text" class="form-control" id="location" v-model="character.location">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="brands">Lojas/Marcas Favoritas:</label>
+                            <input type="text" class="form-control" id="brands" v-model="character.brands">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="favoriteThings">Coisas Favoritas:</label>
+                            <input type="text" class="form-control" id="favoriteThings" v-model="character.favoriteThings">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="accessories">Usa Colares, Anéis?</label>
+                            <input type="text" class="form-control" id="accessories" v-model="character.accessories">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tasteDrugs">Gosto/Drogas:</label>
+                            <input type="text" class="form-control" id="tasteDrugs" v-model="character.tasteDrugs">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="habitsPassions">Hábitos/Paixões:</label>
+                            <input type="text" class="form-control" id="habitsPassions" v-model="character.habitsPassions">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="meaninglessThings">Coisas Sem Sentido:</label>
+                            <input type="text" class="form-control" id="meaninglessThings" v-model="character.meaninglessThings">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="others">Outros/Vinho/Comida:</label>
+                            <input type="text" class="form-control" id="others" v-model="character.others">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <h3>Características Sobrenaturais</h3>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="supernatural">Habilidades Sobrenaturais, Afinidade com Espíritos?</label>
+                            <textarea class="form-control" id="supernatural" rows="2" v-model="character.supernatural"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fortunes">Fortunas:</label>
+                            <input type="text" class="form-control" id="fortunes" v-model="character.fortunes">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="accent">Sotaque/Dialeto:</label>
+                            <input type="text" class="form-control" id="accent" v-model="character.accent">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="sixthSense">Sexto Sentido para Certas Coisas, etc:</label>
+                            <textarea class="form-control" id="sixthSense" rows="2" v-model="character.sixthSense"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4 mb-5">
+                    <div class="col-12">
+                        <button class="btn btn-primary" @click="saveCharacter">Salvar Personagem</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Aba de Personagens Salvos -->
+            <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">
+                <form class="mb-3">
+                    <div class="row">
+                        <label for="formFile" class="form-label">Carregar JSON de personagem</label>
+                        <div class="col">
+                            <input class="form-control" type="file" id="formFile" @change="importCharacter">
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <div class="mt-3" v-if="savedCharacters.length > 0">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h4>Personagens Salvos</h4>
+                            <div class="list-group">
+                                <button 
+                                v-for="(char, index) in savedCharacters" 
+                                :key="index" 
+                                class="list-group-item list-group-item-action" 
+                                :class="{ active: selectedCharacterIndex === index }" 
+                                @click="selectCharacter(index)">
+                                {{ char.name || 'Personagem sem nome' }}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8" v-if="selectedCharacterIndex !== null">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">{{ savedCharacters[selectedCharacterIndex].name || 'Personagem sem nome' }}</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-primary me-2" @click="downloadCharacters">Salvar como JSON</button>
+                                    <button class="btn btn-sm btn-success me-2" @click="exportAsImage">Salvar como Imagem</button>
+                                    <button class="btn btn-sm btn-warning me-2" @click="editCharacter">Editar</button>
+                                    <button class="btn btn-sm btn-danger" @click="deleteCharacter">Excluir</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div v-for="(value, key) in characterDetails" :key="key" class="mb-2">
+                                    <strong>{{ formatLabel(key) }}:</strong> 
+                                    <p v-if="value && value.length > 50">{{ value }}</p>
+                                    <span v-else>{{ value || 'Não informado' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8" v-else>
+                        <div class="alert alert-info">
+                            Selecione um personagem da lista para visualizar seus detalhes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-warning mt-3" v-else>
+                Nenhum personagem salvo. Crie um personagem na aba "Criar Personagem".
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const { createApp, ref, computed, onMounted } = Vue;
+    
+    const app = createApp({
+        setup() {
+
+                // Estado inicial do personagem
+            const character = ref({
+                name: '',
+                age: null,
+                sex: '',
+                birthdate: '',
+                bloodType: '',
+                birthplace: '',
+                height: null,
+                weight: null,
+                hairColor: '',
+                eyeColor: '',
+                eyesight: '',
+                handedness: '',
+                voiceType: '',
+                medicalHistory: '',
+                scars: '',
+                birthmarks: '',
+                distinctiveFeatures: '',
+                race: '',
+                religion: '',
+                records: '',
+                formativeExperiences: '',
+                sexualHistory: '',
+                romanceThoughts: '',
+                peopleRelations: '',
+                dreams: '',
+                fears: '',
+                personalityTraits: '',
+                sayingsHabits: '',
+                relationships: '',
+                familyRelationships: '',
+                problemRelationships: '',
+                employment: '',
+                economicStatus: '',
+                pets: '',
+                personalityTraits2: '',
+                weaknesses: '',
+                distinctive: '',
+                specialSkills: '',
+                fightingStyles: '',
+                physicalSkills: '',
+                languages: '',
+                strengthsWeaknesses: '',
+                hobbies: '',
+                likesDisikes: '',
+                food: '',
+                clothing: '',
+                shelter: '',
+                habits: '',
+                phrases: '',
+                music: '',
+                books: '',
+                movies: '',
+                creativeHobbies: '',
+                collections: '',
+                favoriteColors: '',
+                perfume: '',
+                fashion: '',
+                location: '',
+                brands: '',
+                favoriteThings: '',
+                accessories: '',
+                tasteDrugs: '',
+                habitsPassions: '',
+                meaninglessThings: '',
+                others: '',
+                supernatural: '',
+                fortunes: '',
+                accent: '',
+                sixthSense: ''
+            });
+            
+                // Array para armazenar personagens salvos
+            const savedCharacters = ref([]);
+            const loadCharacter = ref(null);
+            
+                // Índice do personagem selecionado na lista
+            const selectedCharacterIndex = ref(null);
+            
+                // Carregar personagens salvos do localStorage ao iniciar
+            onMounted(() => {
+                const storedCharacters = localStorage.getItem('characterSheet_characters');
+                if (storedCharacters) {
+                    savedCharacters.value = JSON.parse(storedCharacters);
+                }
+            });
+
+                //Download JSON
+            const downloadCharacters = () => {
+                if (savedCharacters.value.length === 0) {
+                    console.warn("Nenhum personagem para salvar.");
+                    return;
+                }
+
+                const firstCharacterName = savedCharacters.value[0].name || "personagem"; // Pega o nome do primeiro personagem
+                const fileName = `${firstCharacterName.replace(/\s+/g, "_")}.json`; // Substitui espaços por "_"
+
+                const jsonString = JSON.stringify(savedCharacters.value, null, 2);
+                const blob = new Blob([jsonString], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                console.log(`Download do JSON concluído! Nome do arquivo: ${fileName}`);
+            };
+
+                // Função para carregar JSON do PC
+            const importCharacter = (event) => {
+                console.log("Função importCharacter chamada!");
+
+                const file = event.target.files[0];
+                if (!file) {
+                    console.log("Nenhum arquivo selecionado");
+                    return;
+                }
+
+                console.log("Arquivo selecionado:", file.name);
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    console.log("Arquivo lido com sucesso!");
+                    try {
+                        const jsonData = JSON.parse(e.target.result);
+                        console.log("Conteúdo do JSON:", jsonData);
+
+                        if (Array.isArray(jsonData)) {
+                            savedCharacters.value.push(...jsonData); // Adiciona os personagens
+                        } else {
+                            savedCharacters.value.push(jsonData);
+                        }
+
+                        console.log("Lista de personagens atualizada:", savedCharacters.value);
+                    } catch (error) {
+                        console.error("Erro ao importar JSON:", error);
+                    }
+                };
+
+                reader.readAsText(file);
+            };
+
+            
+                // Detalhes do personagem selecionado para exibição
+            const characterDetails = computed(() => {
+                if (selectedCharacterIndex.value !== null) {
+                    return savedCharacters.value[selectedCharacterIndex.value];
+                }
+                return {};
+            });
+            
+                // Função para formatar as labels dos campos
+            const formatLabel = (key) => {
+                    // Mapear as chaves para nomes mais amigáveis em português
+                const labelMap = {
+                    name: 'Nome/Apelido',
+                    age: 'Idade',
+                    sex: 'Sexo',
+                    birthdate: 'Data de Nascimento/Signo',
+                    bloodType: 'Tipo Sanguíneo',
+                    birthplace: 'Local de Nascimento',
+                    height: 'Altura',
+                    weight: 'Peso',
+                    hairColor: 'Cor do Cabelo',
+                    eyeColor: 'Cor dos Olhos',
+                    eyesight: 'Visão/Daltonismo/Óculos',
+                    handedness: 'Mão Dominante',
+                    voiceType: 'Tipo de Voz',
+                    medicalHistory: 'Histórico Médico',
+                    scars: 'Cicatrizes/Queimaduras',
+                    birthmarks: 'Marcas de Nascença/Tatuagens',
+                    distinctiveFeatures: 'Características Físicas Distintivas',
+                    race: 'Raça/Etnia',
+                    religion: 'Religião',
+                    records: 'Antecedentes/Prêmios/Educação',
+                    formativeExperiences: 'Experiências Formativas',
+                    sexualHistory: 'Histórico Sexual/Amantes',
+                    romanceThoughts: 'Pensamentos sobre Romance',
+                    peopleRelations: 'Pessoas Admiradas/Odiadas',
+                    dreams: 'Sonhos para o Futuro',
+                    fears: 'Medos',
+                    personalityTraits: 'Traços de Personalidade',
+                    sayingsHabits: 'Expressões Favoritas/Hábitos',
+                    relationships: 'Relacionamentos',
+                    familyRelationships: 'Relacionamento Familiar',
+                    problemRelationships: 'Relacionamentos Problemáticos',
+                    employment: 'Emprego/Escola',
+                    economicStatus: 'Status Econômico',
+                    pets: 'Animais de Estimação/Plantas',
+                    personalityTraits2: 'Detalhes de Personalidade',
+                    weaknesses: 'Fraquezas/Preocupações',
+                    distinctive: 'O que é Distintivo',
+                    specialSkills: 'Habilidades Especiais',
+                    fightingStyles: 'Estilos de Luta',
+                    physicalSkills: 'Habilidades Físicas',
+                    languages: 'Idiomas/Certificações',
+                    strengthsWeaknesses: 'Pontos Fortes e Fracos',
+                    hobbies: 'Hobbies/Recreações',
+                    likesDisikes: 'Gostos/Desgostos',
+                    food: 'Comida',
+                    clothing: 'Roupas',
+                    shelter: 'Moradia',
+                    habits: 'Hábitos',
+                    phrases: 'Frases Favoritas',
+                    music: 'Música/Jornais',
+                    books: 'Livros/Revistas',
+                    movies: 'Filmes',
+                    creativeHobbies: 'Atividades Criativas',
+                    collections: 'Coleções',
+                    favoriteColors: 'Cores Favoritas',
+                    perfume: 'Perfume/Colônia',
+                    fashion: 'Decoração/Moda',
+                    location: 'Localização/Pessoas',
+                    brands: 'Lojas/Marcas Favoritas',
+                    favoriteThings: 'Coisas Favoritas',
+                    accessories: 'Acessórios',
+                    tasteDrugs: 'Gosto/Drogas',
+                    habitsPassions: 'Hábitos/Paixões',
+                    meaninglessThings: 'Coisas Sem Sentido',
+                    others: 'Outros/Vinho/Comida',
+                    supernatural: 'Habilidades Sobrenaturais',
+                    fortunes: 'Fortunas',
+                    accent: 'Sotaque/Dialeto',
+                    sixthSense: 'Sexto Sentido'
+                };
+                
+                return labelMap[key] || key;
+            };
+            
+                // Função para salvar um personagem
+            const saveCharacter = () => {
+
+
+                    // Clonar o objeto para evitar referências
+                const characterToSave = JSON.parse(JSON.stringify(character.value));
+                
+                    // Adicionar ao array de personagens salvos
+                savedCharacters.value.push(characterToSave);
+                
+                    // Salvar no localStorage
+                localStorage.setItem('characterSheet_characters', JSON.stringify(savedCharacters.value));
+                
+                    // Limpar formulário
+                Object.keys(character.value).forEach(key => {
+                    if (typeof character.value[key] === 'string') {
+                        character.value[key] = '';
+                    } else if (typeof character.value[key] === 'number') {
+                        character.value[key] = null;
+                    }
+                });
+                
+                    // Exibir mensagem de sucesso
+                alert('Personagem salvo com sucesso!');
+            };
+            
+                // Função para selecionar um personagem da lista
+            const selectCharacter = (index) => {
+                selectedCharacterIndex.value = index;
+            };
+            
+                // Função para excluir um personagem
+            const deleteCharacter = () => {
+                if (selectedCharacterIndex.value !== null) {
+                    if (confirm('Tem certeza que deseja excluir este personagem?')) {
+                        savedCharacters.value.splice(selectedCharacterIndex.value, 1);
+                        localStorage.setItem('characterSheet_characters', JSON.stringify(savedCharacters.value));
+                        selectedCharacterIndex.value = null;
+                    }
+                }
+            };
+            
+                // Função para editar um personagem
+            const editCharacter = () => {
+                if (selectedCharacterIndex.value !== null) {
+                        // Copiar os dados do personagem selecionado para o formulário
+                    character.value = JSON.parse(JSON.stringify(savedCharacters.value[selectedCharacterIndex.value]));
+                    
+                        // Mudar para a aba de criação
+                    document.getElementById('form-tab').click();
+                    
+                        // Remover o personagem da lista
+                    savedCharacters.value.splice(selectedCharacterIndex.value, 1);
+                    localStorage.setItem('characterSheet_characters', JSON.stringify(savedCharacters.value));
+                    selectedCharacterIndex.value = null;
+                }
+            };
+
+            // Função para exportar como imagem
+            const exportAsImage = () => {
+                if (selectedCharacterIndex.value !== null) {
+                    const characterCard = document.querySelector('.card');
+                    
+                    html2canvas(characterCard).then(canvas => {
+                        // Criar um link temporário para download
+                        const link = document.createElement('a');
+                        link.download = `${savedCharacters.value[selectedCharacterIndex.value].name || 'personagem'}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                }
+            };
+            
+            return {
+                downloadCharacters,
+                importCharacter,
+                character,
+                savedCharacters,
+                selectedCharacterIndex,
+                characterDetails,
+                saveCharacter,
+                selectCharacter,
+                deleteCharacter,
+                editCharacter,
+                formatLabel,
+                exportAsImage,
+            };
+        }
+    });
+
+app.mount('#app');
+</script>
+</body>
+</html>
